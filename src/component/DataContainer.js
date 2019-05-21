@@ -11,10 +11,10 @@ export default class DataContainer extends React.Component {
 
     async componentDidMount() {
         const responses = await getAllData(this.props.url);
+        console.log(responses.data);
         this.setState({
-                    response : [
-                        responses.data
-                    ]
+                    response : responses.data
+
                 });
         console.log("Response from express ==> ");
         console.log(this.state.response[0]);
