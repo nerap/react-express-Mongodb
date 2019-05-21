@@ -10,7 +10,7 @@ class App extends Component {
         return (
             <div>
                 <h1 style={{textAlign : 'center'}}>MongoDB</h1>
-                <DataContainer url="/" />
+                <DataContainer url="/loadData" />
             </div>
         );
     }
