@@ -1,6 +1,7 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+const route = require('./routes/route');
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -16,12 +17,7 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 
 
-app.get('/', (req, res) => {
-    res.json({
-        id : 1,
-        name : "Express work"
-    });
-});
+route(app);
 
 app.listen(port, (req, res) => {
     console.log(`server listening on port: ${port}`)
