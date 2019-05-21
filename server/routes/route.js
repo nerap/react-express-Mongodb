@@ -1,10 +1,12 @@
+var loadAllData  = require('../mongodb/loadAllData')
+
+
 
 
 async function loadData(req, res, next){
-    res.json({
-        id : 1,
-        name : "Express work"
-    });
+    const response = await loadAllData("json", "zip");
+    console.log(response);
+    res.json(response);
 }
 
 
