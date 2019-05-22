@@ -6,11 +6,10 @@ export async function getAllData(url){
     return await API.post(url);
 }
 
-export async function getDataCuisine(url, cuisine){
+export async function getDataCuisine(url, currentCuisine){
 
     const data = {
-        cuisine,
-    };
-
+        currentCuisine
+    }
     return await API.post(url, data);
 }
