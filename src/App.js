@@ -3,16 +3,14 @@ import DataContainer from './component/DataContainer'
 import {getAllData, getDataCuisine} from "./client/dataClient";
 import ReactListInput from "react-list-input"
 
-
-
-class App extends Component {
+export default class App extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
             data: {},
             filter: {},
-            currentCuisine : {},
+            currentCuisine : [],
             currentInput : "",
             km: 5,
             cuisine: [],
@@ -23,8 +21,6 @@ class App extends Component {
         this.Item = this.Item.bind(this);
         this.updateCuisine = this.updateCuisine.bind(this);
         this.handleResearch = this.handleResearch.bind(this);
-        this.handleChangeKm = this.handleChangeKm.bind(this);
-        this.handleChangeGrade = this.handleChangeGrade.bind(this);
     }
 
     async updateCuisine(value){
@@ -32,18 +28,15 @@ class App extends Component {
             const response = await getDataCuisine('/loadCuisine', value);
             this.setState({
                 currentCuisine : response.data
-
             });
             console.log(this.state.currentCuisine)
         }
         else {
             this.setState({
                 currentCuisine : {}
-
             });
         }
     }
-
 
     Item ({decorateHandle, removable, onChange, onRemove, value}) {
         return (
@@ -59,7 +52,7 @@ class App extends Component {
                 {' '}
                 <input value={value} onChange={(e) => {
                     onChange(e.target.value);
-                   this.updateCuisine(e.target.value);
+                    this.updateCuisine(e.target.value);
                 }} />
             </div>
         )
@@ -68,85 +61,69 @@ class App extends Component {
     StagingItem ({value, onAdd, canAdd, add, onChange}) {
         return (
             <div>
-        <span
-            onClick={canAdd ? onAdd : undefined}
-            style={{
-                color: canAdd ? 'black' : 'black',
-                cursor: canAdd ? 'pointer' : 'not-allowed'
-            }}>
-            Add</span>
+                <span
+                    onClick={canAdd ? onAdd : undefined}
+                    style={{
+                        color: canAdd ? 'black' : 'black',
+                        cursor: canAdd ? 'pointer' : 'not-allowed'
+                    }}>
+                    Add
+                </span>
                 {' '}
                 <input value={value} onChange={(e) => {
-                    onChange(e.target.value)
+                    onChange(e.target.value);
                     this.updateCuisine(e.target.value);
                 }} />
             </div>
         )
     }
 
-
-
-
     async setNewContent(url, filter){
-        const responses = await getAllData(url);
+        const responses = await getAllData(url, filter);
         console.log(responses.data);
         this.setState({
-            data : responses.data
+            data : responses.data,
+            cuisine: []
 
         });
         console.log("Response from express ==> ");
         console.log(this.state.data[0]);
     }
 
-
-
     async componentDidMount() {
         await this.setNewContent('/loadData', this.state.filter);
     }
 
-
-    handleChangeKm(event){
-        this.setState({km: parseInt(event.target.value, 10)});
-    }
-
-    handleChangeGrade(event){
-        this.setState({grade: parseInt(event.target.value, 10)});
-    }
-
-
     async handleResearch(event){
-        this.setState({
+        await this.setState({
             filter: {
                 km : this.state.km,
                 cuisine : this.state.cuisine,
                 grade : this.state.grade,
             }
         });
+        await this.setNewContent('/loadData', this.state.filter);
     }
 
     render() {
         if (this.state.data[0]) {
             console.log(this.state)
-
             return (
                 <div>
                     <h1 style={{textAlign: 'center'}}>MongoDB</h1>
-
                     <div style={{border: "1px solid rgb(0, 0, 0)"}}>
-
                     <label>
                         How Far (in KM):
-                        <input type="text" onChange={this.handleChangeKm}/>
-                    </label>
-                        <br/>
-
+                        <input type="text" onChange={(event) => {
+                            this.setState({km: parseInt(event.target.value, 10)});
+                        }}/>
+                    </label><br/>
                     <label>
                         How Grade from 0 to 100 (closest to 0 is better):
-                        <input type="text" onChange={this.handleChangeGrade}/>
-                    </label>
-                        <br/>
-
-
+                        <input type="text" onChange={(event) => {
+                            this.setState({grade: parseInt(event.target.value, 10)});
+                        }}/>
+                    </label><br/>
                     <ReactListInput
                         initialStagingValue=''
                         onChange={value => this.setState({cuisine : value,  currentCuisine : {}})}
@@ -156,16 +133,11 @@ class App extends Component {
                         StagingComponent={this.StagingItem}
                         value={this.state.cuisine}
                     />
-
                     <DataContainer data={this.state.currentCuisine}/>
-
-
                     <button onClick={this.handleResearch}>
                         Search
                     </button>
-
-                    </div>
-                    <br/>
+                    </div><br/>
                     <DataContainer data={this.state.data}/>
                 </div>
             );
@@ -176,6 +148,3 @@ class App extends Component {
     }
 }
 
-
-
-export default App;

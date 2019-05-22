@@ -5,7 +5,7 @@ var loadDataCuisine  = require('../mongodb/loadDataByCuisine')
 
 
 async function loadData(req, res, next){
-    const response = await loadAllData("json", "totalPerCity");
+    const response = await loadAllData("json", "restaurants", req.body.filter);
     res.json(response)
 }
 
