@@ -1,13 +1,17 @@
 import React, { Component } from "react";
 import DataContainer from './component/DataContainer'
-import {getAllData, getDataCuisine} from "./client/dataClient";
+import {Link} from "react-router-dom";
+import {getAllData, getDataCuisine, isLogged} from "./client/dataClient";
 import ReactListInput from "react-list-input"
+
+
 
 export default class App extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            logged : false,
             data: {},
             filter: {},
             currentCuisine : [],
@@ -23,13 +27,25 @@ export default class App extends Component {
         this.handleResearch = this.handleResearch.bind(this);
     }
 
+
+    async logged(){
+        const response = await isLogged('/logged')
+
+        await this.setState({
+            logged : response.logged
+        })
+        return (response.logged);
+
+
+    }
+
     async updateCuisine(value){
         if (value.length > 0) {
-            const response = await getDataCuisine('/loadCuisine', value);
-            this.setState({
-                currentCuisine : response.data
-            });
-            console.log(this.state.currentCuisine)
+                const response = await getDataCuisine('/loadCuisine', value);
+                this.setState({
+                    currentCuisine: response.data
+                });
+                console.log(this.state.currentCuisine)
         }
         else {
             this.setState({
@@ -82,7 +98,7 @@ export default class App extends Component {
         const responses = await getAllData(url, filter);
         console.log(responses.data);
         this.setState({
-            data : responses.data,
+            data : responses,
             cuisine: []
 
         });
@@ -91,6 +107,7 @@ export default class App extends Component {
     }
 
     async componentDidMount() {
+        await this.logged();
         await this.setNewContent('/loadData', this.state.filter);
     }
 
@@ -106,6 +123,17 @@ export default class App extends Component {
     }
 
     render() {
+       // console.log(this.logged())
+        if (this.state.logged === false){
+            console.log("NOT LOGGEED")
+            return(
+                <div>
+                    U ARE NOT CONNECTED
+                    <Link to="/login/">Login</Link>
+                </div>
+            )
+        }
+        console.log("LOGGEED")
         if (this.state.data[0]) {
             console.log(this.state)
             return (

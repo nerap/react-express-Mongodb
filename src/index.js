@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import AppRouter from './component/AppRouter';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
-    <App/>,
+    <AppRouter/>,
     document.getElementById('root')
 );
 

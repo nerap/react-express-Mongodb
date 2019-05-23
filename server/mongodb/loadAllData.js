@@ -14,7 +14,9 @@ module.exports = async function loadDataCollection(dbName, name, filter){
                 _id : 0,
                 name : 1,
                 cuisine : 1,
-                borough : 1
+                borough : 1,
+                "grades.score" : 1,
+                "address.coord.coordinates": 1
             }}).limit(100).toArray();
     client.close();
     return response;
