@@ -1,4 +1,4 @@
-var connect  = require('./connect')
+const connect  = require('./connect')
 
 module.exports = async function loadDataCuisine(dbName, name, regex){
     const client = await connect();

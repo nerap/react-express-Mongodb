@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import DataContainer from './component/DataContainer'
 import {Link} from "react-router-dom";
-import {getAllData, getDataCuisine, isLogged} from "./client/dataClient";
+import {getAllData, getDataCuisine, isLogged, insertFilter, loadUserResearch} from "./client/dataClient";
 import ReactListInput from "react-list-input"
+
 
 
 export default class App extends Component {
@@ -101,13 +102,40 @@ export default class App extends Component {
             displayedData : 100
 
         });
-
         //console.log("Response from express ==> ");
         console.log(this.state);
     }
 
+    async setSuggestion(data){
+
+        //console.log(responses.data);
+        await this.setState({
+            filter: {
+                km : this.state.km,
+                cuisine : this.state.cuisine,
+                grade : this.state.grade,
+            }
+        });
+        //console.log("Response from express ==> ");
+        await this.setNewContent('/loadData', this.state.filter);
+    }
+
+    async insertFilterUser(url, filter){
+        await insertFilter(url, filter)
+    }
+
     async componentDidMount() {
         await this.logged();
+        const response = await loadUserResearch('/getResearch');
+        console.log(response);
+        const rand = Math.floor(Math.random() * Math.floor(response.length));
+        await this.setState({
+            filter: {
+                km : response[rand].distance,
+                cuisine : response[rand]._id.cuisine,
+                grade : response[rand].grades,
+            }
+        });
         await this.setNewContent('/loadData', this.state.filter);
     }
 
@@ -119,6 +147,7 @@ export default class App extends Component {
                 grade : this.state.grade,
             }
         });
+        await this.insertFilterUser('/insertFilter', this.state.filter);
         await this.setNewContent('/loadData', this.state.filter);
     }
 
@@ -165,7 +194,23 @@ export default class App extends Component {
                     <button onClick={this.handleResearch}>
                         Search
                     </button>
-                    </div><br/>
+                    </div>
+                    <br/>
+                    {Object.keys(this.state.data[0]).map((data, i) => (
+                    <button key={i} onClick={()=> {
+
+                        let temp = this.state.data
+
+                        temp.sort(function(a, b) {
+                            return (a[data] - b[data])});
+
+                        this.setState({
+                            data : temp
+                        })
+                    }}>
+                        {data}
+                    </button>
+                    ))}
                     <DataContainer data={this.state.data.slice(0, this.state.displayedData)}/>
                     <button onClick={()=>{
                         this.setState({displayedData: this.state.displayedData + 50});

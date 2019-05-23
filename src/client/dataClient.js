@@ -1,21 +1,21 @@
+import Axios from "axios";
 
-import axios from "axios";
+const NyCoord = [-73.9772, 40.7808];
 
 
 function calcCrow(lat1, lon1, lat2, lon2)
 {
-    var R = 6371; // km
-    var dLat = toRad(lat2-lat1);
-    var dLon = toRad(lon2-lon1);
-    var lat1 = toRad(lat1);
-    var lat2 = toRad(lat2);
+    let R = 6371; // km
+    let dLat = toRad(lat2-lat1);
+    let dLon = toRad(lon2-lon1);
+    lat1 = toRad(lat1);
+    lat2 = toRad(lat2);
 
-    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+    let temp = Math.sin(dLat/2) * Math.sin(dLat/2) +
         Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2);
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    var d = R * c;
+    let radian = 2 * Math.atan2(Math.sqrt(temp), Math.sqrt(1 - temp));
 
-    return d;
+    return (R * radian);
 }
 // Converts numeric degrees to radians
 function toRad(Value)
@@ -38,8 +38,8 @@ export async function getAllData(url, filter){
         filter
     };
 
-    const response = await axios.post(url, data);
-    const result = response.data.map((data)=>{
+    const response = await Axios.post(url, data);
+    const result = response.data.map((data) => {
 
         var scores = 0;
         data.grades.map((dat)=>{
@@ -52,8 +52,8 @@ export async function getAllData(url, filter){
            name : data.name,
            score :  parseInt(scores/data.grades.length, 10),
            distance : calcCrow(
-               40.7808,
-               -73.9772,
+               NyCoord[1],
+               NyCoord[0],
                data.address.coord.coordinates[1],
                data.address.coord.coordinates[0]).toFixed(1)
        })
@@ -66,11 +66,11 @@ export async function getDataCuisine(url, currentCuisine){
     const data = {
         currentCuisine
     };
-    return await axios.post(url, data);
+    return await Axios.post(url, data);
 }
 
 export async function isLogged(url){
-    const response = await axios.post(url);
+    const response = await Axios.post(url);
     return response.data;
 }
 
@@ -79,7 +79,23 @@ export async function tryLogin (username, password) {
         username,
         password
     };
-    const response = await axios.post('/login', data);
-   // console.log('===> User response', await response);
+    const response = await Axios.post('/login', data);
     return await response.data
 }
+
+export async function insertFilter(url, filter)
+{
+    const data = {
+        filter
+    }
+    const response = await Axios.post(url, data);
+    return response.data;
+}
+
+export async function loadUserResearch(url)
+{
+    const response = await Axios.post(url);
+    return response.data;
+}
+
+
