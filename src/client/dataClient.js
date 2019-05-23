@@ -1,4 +1,5 @@
-import API from "../utils/API";
+
+import axios from "axios";
 
 
 export async function getAllData(url, filter){
@@ -14,7 +15,7 @@ export async function getAllData(url, filter){
     const data = {
         filter
     }
-    return await API.post(url, data);
+    return await axios.post(url, data);
 }
 
 export async function getDataCuisine(url, currentCuisine){
@@ -22,5 +23,5 @@ export async function getDataCuisine(url, currentCuisine){
     const data = {
         currentCuisine
     }
-    return await API.post(url, data);
+    return await axios.post(url, data);
 }
