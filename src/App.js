@@ -5,7 +5,6 @@ import {getAllData, getDataCuisine, isLogged} from "./client/dataClient";
 import ReactListInput from "react-list-input"
 
 
-
 export default class App extends Component {
     constructor(props) {
         super(props);
@@ -18,7 +17,8 @@ export default class App extends Component {
             currentInput : "",
             km: 5,
             cuisine: [],
-            grade: 10
+            grade: 10,
+            displayedData : 100
         };
 
         this.StagingItem = this.StagingItem.bind(this);
@@ -27,13 +27,11 @@ export default class App extends Component {
         this.handleResearch = this.handleResearch.bind(this);
     }
 
-
     async logged(){
-        const response = await isLogged('/logged')
-
+        const response = await isLogged('/logged');
         await this.setState({
             logged : response.logged
-        })
+        });
         return (response.logged);
 
 
@@ -96,14 +94,16 @@ export default class App extends Component {
 
     async setNewContent(url, filter){
         const responses = await getAllData(url, filter);
-        console.log(responses.data);
+        //console.log(responses.data);
         this.setState({
             data : responses,
-            cuisine: []
+            cuisine: [],
+            displayedData : 100
 
         });
-        console.log("Response from express ==> ");
-        console.log(this.state.data[0]);
+
+        //console.log("Response from express ==> ");
+        console.log(this.state);
     }
 
     async componentDidMount() {
@@ -125,7 +125,7 @@ export default class App extends Component {
     render() {
        // console.log(this.logged())
         if (this.state.logged === false){
-            console.log("NOT LOGGEED")
+            //console.log("NOT LOGGEED")
             return(
                 <div>
                     U ARE NOT CONNECTED
@@ -133,7 +133,7 @@ export default class App extends Component {
                 </div>
             )
         }
-        console.log("LOGGEED")
+        //console.log("LOGGEED")
         if (this.state.data[0]) {
             console.log(this.state)
             return (
@@ -166,7 +166,12 @@ export default class App extends Component {
                         Search
                     </button>
                     </div><br/>
-                    <DataContainer data={this.state.data}/>
+                    <DataContainer data={this.state.data.slice(0, this.state.displayedData)}/>
+                    <button onClick={()=>{
+                        this.setState({displayedData: this.state.displayedData + 50});
+                    }}>
+                        Voir Plus
+                    </button>
                 </div>
             );
         }

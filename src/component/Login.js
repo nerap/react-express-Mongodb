@@ -13,7 +13,6 @@ export default class Login extends React.Component {
         this.handleLogin = this.handleLogin.bind(this);
     }
 
-
     async handleLogin(){
         const response = await tryLogin(this.state.username, this.state.password);
         console.log(response);
@@ -23,7 +22,7 @@ export default class Login extends React.Component {
             return (
                 <div>
                     Login Page
-
+                    <br/>
                     <label>
                         USERNAME
                     </label>
@@ -32,7 +31,7 @@ export default class Login extends React.Component {
                             username : e.target.value
                         })
                     }} />
-
+                    <br/>
                     <label>
                         PASSWORD
                     </label>
@@ -41,7 +40,7 @@ export default class Login extends React.Component {
                             password : e.target.value
                         })
                     }} />
-
+                    <br/>
                     <button onClick={this.handleLogin}>
                         Login
                     </button>

@@ -20,7 +20,8 @@ export default class DataContainer extends React.Component {
                     ))}
                     </Row>
                     {this.props.data.map((data, i) => (
-                        <Row key={i}>{keys.map((key, index) => (
+                        <Row key={i}>
+                            {keys.map((key, index) => (
                             <Col key={index} style={{border: "1px solid rgb(0, 0, 0)"}}>
                                 {data[key]}
                             </Col>

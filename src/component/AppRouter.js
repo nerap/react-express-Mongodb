@@ -18,7 +18,6 @@ function AppRouter() {
                         </li>
                     </ul>
                 </nav>
-
                 <Route path="/" exact component={App} />
                 <Route path="/login/" component={Login} />
             </div>
